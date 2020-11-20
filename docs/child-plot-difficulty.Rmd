@@ -1,0 +1,67 @@
+## {{game_name}}
+
+```{r {{game_name}}-extract-data}
+cur_game_data <- data %>% 
+  filter(game_name == "{{game_name}}")
+n_set <- n_distinct(cur_game_data$set)
+```
+
+```{r {{game_name}}-three-star, fig.height=2+4*n_set, fig.width=8}
+p <- cur_game_data %>%
+  group_by(set, user_id, game_stage) %>%
+  summarise(
+    rate_pass = sum(game_star >= 3) / n(),
+    .groups = "drop"
+  ) %>%
+  group_by(set, game_stage) %>%
+  summarise(n = n(), mean_se(rate_pass), .groups = "drop") %>% 
+  ggplot(
+    aes(game_stage, y, ymin = ymin, ymax = ymax, group = 1, label = n)
+  ) +
+  geom_point() +
+  geom_errorbar(width = 0) +
+  geom_line() +
+  ggrepel::geom_text_repel() +
+  scale_x_continuous(breaks = seq(0, 40, 5), minor_breaks = 0:40) +
+  labs(
+    x = "关卡", y = str_c("通过率（三颗星及以上）"),
+    title = "{{game_name}}"
+  ) +
+  ggpubr::theme_pubclean() +
+  theme(plot.title = element_text(hjust = 0.5))
+if (n_set == 2) {
+  p + facet_wrap(~ set, ncol = 1)
+} else {
+  p
+}
+```
+
+```{r {{game_name}}-two-star, fig.height=2+4*n_set, fig.width=8}
+p <- cur_game_data %>%
+  group_by(set, user_id, game_stage) %>%
+  summarise(
+    rate_pass = sum(game_star >= 2) / n(),
+    .groups = "drop"
+  ) %>%
+  group_by(set, game_stage) %>%
+  summarise(n = n(), mean_se(rate_pass), .groups = "drop") %>% 
+  ggplot(
+    aes(game_stage, y, ymin = ymin, ymax = ymax, group = 1, label = n)
+  ) +
+  geom_point() +
+  geom_errorbar(width = 0) +
+  geom_line() +
+  ggrepel::geom_text_repel() +
+  scale_x_continuous(breaks = seq(0, 40, 5), minor_breaks = 0:40) +
+  labs(
+    x = "关卡", y = str_c("通过率（两颗星及以上）"),
+    title = "{{game_name}}"
+  ) +
+  ggpubr::theme_pubclean() +
+  theme(plot.title = element_text(hjust = 0.5))
+if (n_set == 2) {
+  p + facet_wrap(~ set, ncol = 1)
+} else {
+  p
+}
+```

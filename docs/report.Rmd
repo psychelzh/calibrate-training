@@ -1,0 +1,25 @@
+---
+title: "所有游戏通过率"
+output:
+  html_document:
+    theme: readable
+    code_folding: hide
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_knit$set(root.dir = here::here())
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+```{r render-contents, results='asis'}
+loadd(data)
+game_names <- unique(data$game_name)
+for (game_name in game_names) {
+  knitr::knit_expand(knitr_in("docs/child-plot-difficulty.Rmd")) %>% 
+    knitr::knit(text = ., quiet = TRUE) %>% 
+    cat()
+  cat("\n\n")
+}
+```

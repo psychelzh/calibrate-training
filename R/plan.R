@@ -31,5 +31,15 @@ the_plan <-
       old = data_old_adj,
       new = data_new,
       .id = "set"
-    )
+    ),
+    game_names = unique(data$game_name),
+    game_stars = 2:3,
+    report = {
+      rmarkdown::render(
+        knitr_in("docs/report.Rmd"),
+        output_file = file_out("docs/report.html"),
+        output_dir = "docs"
+      )
+      unlink("figure", recursive = TRUE)
+    }
   )
