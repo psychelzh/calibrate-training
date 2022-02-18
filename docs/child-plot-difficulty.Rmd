@@ -7,14 +7,17 @@ n_set <- n_distinct(cur_game_data$set)
 ```
 
 ```{r {{game_name}}-three-star, fig.height=2+4*n_set, fig.width=8}
-p <- cur_game_data %>%
+plot_data <- cur_game_data %>%
   group_by(set, user_id, game_stage) %>%
   summarise(
     rate_pass = sum(game_star >= 3) / n(),
     .groups = "drop"
   ) %>%
   group_by(set, game_stage) %>%
-  summarise(n = n(), mean_se(rate_pass), .groups = "drop") %>% 
+  summarise(n = n(), mean_se(rate_pass), .groups = "drop")
+plot_data %>% 
+  knitr::kable(digits = 3)
+p <- plot_data %>% 
   ggplot(
     aes(game_stage, y, ymin = ymin, ymax = ymax, group = 1, label = n)
   ) +
@@ -37,14 +40,17 @@ if (n_set == 2) {
 ```
 
 ```{r {{game_name}}-two-star, fig.height=2+4*n_set, fig.width=8}
-p <- cur_game_data %>%
+plot_data <- cur_game_data %>%
   group_by(set, user_id, game_stage) %>%
   summarise(
     rate_pass = sum(game_star >= 2) / n(),
     .groups = "drop"
   ) %>%
   group_by(set, game_stage) %>%
-  summarise(n = n(), mean_se(rate_pass), .groups = "drop") %>% 
+  summarise(n = n(), mean_se(rate_pass), .groups = "drop")
+plot_data %>% 
+  knitr::kable(digits = 3)
+p <- plot_data %>% 
   ggplot(
     aes(game_stage, y, ymin = ymin, ymax = ymax, group = 1, label = n)
   ) +

@@ -32,8 +32,11 @@ the_plan <-
       new = data_new,
       .id = "set"
     ),
-    game_names = unique(data$game_name),
-    game_stars = 2:3,
+    stats_difficulty = calc_difficulty(data),
+    stats_out = writexl::write_xlsx(
+      stats_difficulty,
+      file_out("results/stats.xlsx")
+    ),
     report = {
       rmarkdown::render(
         knitr_in("docs/report.Rmd"),
